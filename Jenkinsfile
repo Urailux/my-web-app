@@ -6,9 +6,19 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Urailux/my-web-app.git'
             }
         }
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                echo 'No build needed for static website.'
+                sh 'npm install'
+            }
+        }
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm run test'
             }
         }
         stage('Deploy') {
@@ -16,7 +26,7 @@ pipeline {
                 sh '''
                   mkdir -p /tmp/webdeploy
                   cp -r * /tmp/webdeploy/
-                  echo "Website deployed to /tmp/webdeploy/"
+                  echo "✅ Deployed to /tmp/webdeploy/"
                 '''
             }
         }
