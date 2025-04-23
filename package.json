@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "test": "echo \"✅ No tests yet\" && exit 0"
+    "test": "jest"
   },
   "devDependencies": {
     "eslint": "^8.0.0"
