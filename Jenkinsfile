@@ -39,7 +39,7 @@ pipeline {
                     def now = sh(script: "date '+%Y-%m-%d %H:%M'", returnStdout: true).trim()
                     def status = currentBuild.currentResult
                     def emoji = (status == 'SUCCESS') ? '✅' : '❌'
-                    def message = "${emoji} Jenkins Build ${status == 'SUCCESS' ? 'SUCCESS' : 'Failed'} \\n📅 DateTime: ${now}\\n📦 Job: ${env.JOB_NAME}\\n📄 Status: ${status}"
+                    def message = "${emoji} Jenkins Build ${status == 'SUCCESS' ? 'SUCCESS' : 'Failed'} \\n DateTime: ${now}\\n Job: ${env.JOB_NAME}\\n Status: ${status}"
 
                     withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
                         sh """
