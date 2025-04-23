@@ -30,16 +30,26 @@ pipeline {
                 '''
             }
         }
-        stage('Notify Discord') {
-            steps {
-                withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
-                    sh '''
-                      curl -H "Content-Type: application/json" \
-                           -X POST \
-                           -d '{"content": "✅ Jenkins Build Successfully"}' \
-                           $DISCORD_URL
-                    '''
-                }
+    }
+    post {
+        success {
+            withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
+                sh '''
+                  curl -H "Content-Type: application/json" \
+                       -X POST \
+                       -d '{"content": "✅ Jenkins Build Successfully 🎉\\nJob: my-web-pipeline\\nStatus: SUCCESS"}' \
+                       $DISCORD_URL
+                '''
+            }
+        }
+        failure {
+            withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
+                sh '''
+                  curl -H "Content-Type: application/json" \
+                       -X POST \
+                       -d '{"content": "❌ Jenkins Build Fialed 😥\\nJob: my-web-pipeline\\nStatus: FAILURE"}' \
+                       $DISCORD_URL
+                '''
             }
         }
     }
