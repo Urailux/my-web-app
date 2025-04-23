@@ -2,7 +2,7 @@
   "name": "my-web-app",
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint '**/*.js'",
     "test": "echo \"✅ No tests yet\" && exit 0"
   },
   "devDependencies": {
