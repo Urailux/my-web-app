@@ -29,18 +29,18 @@ pipeline {
                   echo "✅ Deployed to /tmp/webdeploy/"
                 '''
             }
-stage('Notify Discord') {
-    steps {
-        withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
-            sh '''
-              curl -H "Content-Type: application/json" \
-                   -X POST \
-                   -d '{"content": "✅ Jenkins Build Successfully"}' \
-                   $DISCORD_URL
-            '''
+        }
+        stage('Notify Discord') {
+            steps {
+                withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
+                    sh '''
+                      curl -H "Content-Type: application/json" \
+                           -X POST \
+                           -d '{"content": "✅ Jenkins Build Successfully"}' \
+                           $DISCORD_URL
+                    '''
+                }
+            }
         }
     }
 }
-    }
-}
-
