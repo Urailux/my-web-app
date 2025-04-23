@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        NOW = "" // สำหรับเก็บวันที่และเวลา
+        NOW = ""
     }
     stages {
         stage('Checkout') {
@@ -33,32 +33,23 @@ pipeline {
                 '''
             }
         }
-    }
-    post {
-        always {
-            script {
-                // บันทึกวันที่-เวลา เช่น "2025-04-23 18:45"
-                env.NOW = sh(script: "date '+%Y-%m-%d %H:%M'", returnStdout: true).trim()
-            }
-        }
-        success {
-            withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
-                sh '''
-                  curl -H "Content-Type: application/json" \
-                       -X POST \
-                       -d "{\"content\": \"✅ Jenkins Build successfully 🎉\\n📅 เวลา: ${NOW}\\n📦 Job: my-web-pipeline\\n🟢 Status: SUCCESS\"}" \
-                       $DISCORD_URL
-                '''
-            }
-        }
-        failure {
-            withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
-                sh '''
-                  curl -H "Content-Type: application/json" \
-                       -X POST \
-                       -d "{\"content\": \"❌ Jenkins Build Failed 😥\\n📅 เวลา: ${NOW}\\n📦 Job: my-web-pipeline\\n🔴 Status: FAILURE\"}" \
-                       $DISCORD_URL
-                '''
+        stage('Notify Discord') {
+            steps {
+                script {
+                    def now = sh(script: "date '+%Y-%m-%d %H:%M'", returnStdout: true).trim()
+                    def status = currentBuild.currentResult
+                    def emoji = (status == 'SUCCESS') ? '✅' : '❌'
+                    def message = "${emoji} Jenkins Build ${status == 'SUCCESS' ? 'SUCCESS' : 'Failed'} \\n📅 DateTime: ${now}\\n📦 Job: ${env.JOB_NAME}\\n📄 Status: ${status}"
+
+                    withCredentials([string(credentialsId: 'DISCORD_WEBHOOK_URL', variable: 'DISCORD_URL')]) {
+                        sh """
+                          curl -H "Content-Type: application/json" \
+                               -X POST \
+                               -d '{\"content\": \"${message}\"}' \
+                               \$DISCORD_URL
+                        """
+                    }
+                }
             }
         }
     }
