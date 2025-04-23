@@ -35,7 +35,7 @@ stage('Notify Discord') {
             sh '''
               curl -H "Content-Type: application/json" \
                    -X POST \
-                   -d '{"content": "✅ Jenkins Build สำเร็จแล้วค่ะพี่!"}' \
+                   -d '{"content": "✅ Jenkins Build Successfully"}' \
                    $DISCORD_URL
             '''
         }
